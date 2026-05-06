@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+            border-bottom: 1px solid #ccc;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 1.2em;
+            margin: 0;
+            flex: 1;
+        }
+
+        header nav {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        header a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .categories-list {
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .category-item {
+            margin-bottom: 10px;
+        }
+
+        .category-item strong {
+            font-size: 1.1em;
+        }
+
+        .category-values {
+            margin-top: 10px;
+            font-size: 1em;
+        }
+
+        /* Remove underline for the feedback link */
+        #feedback-link {
+            text-decoration: none;
+            color: blue;
+            font-size: 1em;
+        }
+
+        /* Style for feedback list */
+        #approved-feedback-values {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+    </style>
+
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header with navigation menu -->
+    <header>
+        <h1><a href="home.html" style="text-decoration: none; color: black;">Privacy Patterns</a></h1>
+        <nav>
+            <a href="search.html">Search</a>
+            <a href="suggest.html">Suggest</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 id="pattern-name">Loading...</h1>
+
+        <div class="section">
+            <strong>Description:</strong>
+            <p id="pattern-description">Loading...</p>
+        </div>
+
+        <div class="section">
+            <strong>Context:</strong>
+            <p id="pattern-context">Loading...</p>
+        </div>
+
+        <div class="section">
+            <strong>Problem:</strong>
+            <p id="pattern-problem">Loading...</p>
+        </div>
+
+        <div class="section">
+            <strong>Solution:</strong>
+            <p id="pattern-solution">Loading...</p>
+        </div>
+
+        <div class="section">
+            <strong>Example:</strong>
+            <p id="pattern-example">Loading...</p>
+        </div>
+
+        <!-- Release Feedback Link -->
+        <div class="section">
+            <a id="feedback-link" href="feedback.html">Release Feedback</a>
+        </div>
+
+        <!-- Download Button -->
+        <button id="download-btn">Download as PDF</button>
+
+        <!-- Categories List Section -->
+        <div class="categories-list">
+            <div id="cwe-list" class="category-item">
+                <strong>CWE:</strong>
+                <div id="cwe-values" class="category-values">Loading...</div>
+            </div>
+
+            <div id="gdpr-article-list" class="category-item">
+                <strong>GDPR Articles:</strong>
+                <div id="gdpr-article-values" class="category-values">Loading...</div>
+            </div>
+
+            <div id="iso-phase-list" class="category-item">
+                <strong>ISO Phases:</strong>
+                <div id="iso-phase-values" class="category-values">Loading...</div>
+            </div>
+
+            <div id="mvc-list" class="category-item">
+                <strong>MVC:</strong>
+                <div id="mvc-values" class="category-values">Loading...</div>
+            </div>
+
+            <div id="owasp-list" class="category-item">
+                <strong>OWASP:</strong>
+                <div id="owasp-values" class="category-values">Loading...</div>
+            </div>
+
+            <div id="pbd-principle-list" class="category-item">
+                <strong>PBD Principles:</strong>
+                <div id="pbd-principle-values" class="category-values">Loading...</div>
+            </div>
+
+            <div id="strategy-list" class="category-item">
+                <strong>Strategies:</strong>
+                <div id="strategy-values" class="category-values">Loading...</div>
+            </div>
+        </div>
+
+        <!-- New Section for Feedback Approvati -->
+        <div class="categories-list">
+            <div id="approved-feedback-list" class="category-item">
+                <strong>Approved Feedback:</strong>
+                <ul id="approved-feedback-values" class="category-values">Loading...</ul>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Pattern details page</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const patternId = urlParams.get('id');  // Recupera l'ID dalla query string
+
+            if (!patternId) {
+                alert('Pattern not found!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:1337/api/patterns/${patternId}`);
+                const data = await response.json();
+
+                if (data.data) {
+                    const pattern = data.data;
+
+                    // Set the content of the page
+                    document.getElementById('pattern-name').textContent = pattern.attributes.PatternName || 'No name available';
+                    document.getElementById('pattern-description').textContent = pattern.attributes.Description || 'No description available';
+                    document.getElementById('pattern-context').textContent = pattern.attributes.Context || 'No context available';
+                    document.getElementById('pattern-problem').textContent = pattern.attributes.Problem || 'No problem available';
+                    document.getElementById('pattern-solution').textContent = pattern.attributes.Solution || 'No solution available';
+                    document.getElementById('pattern-example').textContent = pattern.attributes.Example || 'No example available';
+
+                    // Fetch associated categories
+                    const cweResponse = await fetch(`http://localhost:1337/api/cwes?filters[patterns]=${patternId}`);
+                    const cweData = await cweResponse.json();
+                    const cweValues = cweData.data.map(cwe => `${cwe.attributes.CWECode} - ${cwe.attributes.CWEName}`).join(', ');
+                    document.getElementById('cwe-values').textContent = cweValues || 'No CWE available';
+
+                    const gdprResponse = await fetch(`http://localhost:1337/api/gdpr-articles?filters[patterns]=${patternId}`);
+                    const gdprData = await gdprResponse.json();
+                    const gdprValues = gdprData.data.map(gdpr => `${gdpr.attributes.ArticleNumber} - ${gdpr.attributes.ArticleName}`).join(', ');
+                    document.getElementById('gdpr-article-values').textContent = gdprValues || 'No GDPR articles available';
+
+                    const isoResponse = await fetch(`http://localhost:1337/api/iso-phases?filters[patterns]=${patternId}`);
+                    const isoData = await isoResponse.json();
+                    const isoValues = isoData.data.map(iso => `${iso.attributes.ISOPhaseNumber} - ${iso.attributes.ISOPhaseDescription}`).join(', ');
+                    document.getElementById('iso-phase-values').textContent = isoValues || 'No ISO phases available';
+
+                    const mvcResponse = await fetch(`http://localhost:1337/api/mvcs?filters[patterns]=${patternId}`);
+                    const mvcData = await mvcResponse.json();
+                    const mvcValues = mvcData.data.map(mvc => `${mvc.attributes.MVCName}`).join(', ');
+                    document.getElementById('mvc-values').textContent = mvcValues || 'No MVC available';
+
+                    const owaspResponse = await fetch(`http://localhost:1337/api/owasps?filters[patterns]=${patternId}`);
+                    const owaspData = await owaspResponse.json();
+                    const owaspValues = owaspData.data.map(owasp => `${owasp.attributes.OWASPCode} - ${owasp.attributes.OWASPName}`).join(', ');
+                    document.getElementById('owasp-values').textContent = owaspValues || 'No OWASP available';
+
+                    const pbdResponse = await fetch(`http://localhost:1337/api/pbd-principles?filters[patterns]=${patternId}`);
+                    const pbdData = await pbdResponse.json();
+                    const pbdValues = pbdData.data.map(pbd => `${pbd.attributes.PrincipleName}`).join(', ');
+                    document.getElementById('pbd-principle-values').textContent = pbdValues || 'No PBD principles available';
+
+                    const strategyResponse = await fetch(`http://localhost:1337/api/strategies?filters[patterns]=${patternId}`);
+                    const strategyData = await strategyResponse.json();
+                    const strategyValues = strategyData.data.map(strategy => `${strategy.attributes.StrategyName}`).join(', ');
+                    document.getElementById('strategy-values').textContent = strategyValues || 'No strategies available';
+
+                    // Fetch approved feedback (new section)
+                    const feedbackResponse = await fetch(`http://localhost:1337/api/feedbacks?filters[isApproved]=true&filters[patterns]=${patternId}`);
+                    const feedbackData = await feedbackResponse.json();
+                    const feedbackValues = feedbackData.data.map(feedback => feedback.attributes.feedback);
+
+                    // Display feedback as a list
+                    const feedbackList = document.getElementById('approved-feedback-values');
+                    feedbackList.innerHTML = ''; // Clear the list
+                    if (feedbackValues.length > 0) {
+                        feedbackValues.forEach(feedback => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = feedback;
+                            feedbackList.appendChild(listItem);
+                        });
+                    } else {
+                        feedbackList.textContent = 'No approved feedback available';
+                    }
+
+                    // PDF generation on download button click
+                    document.getElementById('download-btn').addEventListener('click', () => {
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF();
+
+                        // Set the title of the PDF
+                        doc.setFontSize(18);
+                        doc.text(pattern.attributes.PatternName || 'Unnamed Pattern', 10, 10);
+
+                        // Add the pattern's details with line breaks for better formatting
+                        doc.setFontSize(12);
+                        let yPosition = 20;
+                        const margin = 10;
+                        const maxWidth = 180;
+
+                        function wrapText(text, y) {
+                            const lines = doc.splitTextToSize(text, maxWidth);
+                            doc.text(lines, margin, y);
+                            return y + lines.length * 7;
+                        }
+
+                        yPosition = wrapText('Description: ' + (pattern.attributes.Description || 'No description available'), yPosition);
+                        yPosition = wrapText('Context: ' + (pattern.attributes.Context || 'No context available'), yPosition);
+                        yPosition = wrapText('Problem: ' + (pattern.attributes.Problem || 'No problem available'), yPosition);
+                        yPosition = wrapText('Solution: ' + (pattern.attributes.Solution || 'No solution available'), yPosition);
+                        yPosition = wrapText('Example: ' + (pattern.attributes.Example || 'No example available'), yPosition);
+
+                        // Adding associated categories to PDF
+                        yPosition = wrapText('CWE: ' + cweValues, yPosition);
+                        yPosition = wrapText('GDPR Articles: ' + gdprValues, yPosition);
+                        yPosition = wrapText('ISO Phases: ' + isoValues, yPosition);
+                        yPosition = wrapText('MVC: ' + mvcValues, yPosition);
+                        yPosition = wrapText('OWASP: ' + owaspValues, yPosition);
+                        yPosition = wrapText('PBD Principles: ' + pbdValues, yPosition);
+                        yPosition = wrapText('Strategies: ' + strategyValues, yPosition);
+                        yPosition = wrapText('Approved Feedback: ' + feedbackValues.join(', '), yPosition);
+
+                        // Save PDF
+                        doc.save('pattern_details.pdf');
+                    });
+                } else {
+                    alert('Pattern not found!');
+                }
+            } catch (error) {
+                console.error('Error fetching pattern details:', error);
+            }
+        });
+    </script>
+</body>
+</html>

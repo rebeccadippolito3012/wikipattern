@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Patterns</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+            border-bottom: 1px solid #ccc;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        header nav {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        header a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            background-color: #f9f9f9;
+            transition: box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Privacy Patterns</h1>
+        <nav>
+            <a href="search.html">Search</a>
+            <a href="suggest.html">Suggest</a>
+        </nav>
+    </header>
+    
+    <div class="container" id="patterns-container">
+        <!-- Cards will be dynamically injected here -->
+    </div>
+
+    <footer>
+        <p>Loading patterns...</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('patterns-container');
+            const footer = document.querySelector('footer p');
+            
+            try {
+                const response = await fetch('http://localhost:1337/api/patterns');
+                const data = await response.json();
+
+                // Log the data to see what is returned
+                console.log(data);
+
+                if (data.data && data.data.length > 0) {
+                    footer.textContent = ''; // Remove the "Loading patterns..." message
+
+                    data.data.forEach(pattern => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+
+                        const patternName = pattern.attributes?.PatternName;
+                        const patternId = pattern.id;
+
+                        // Set the pattern name in the card
+                        card.textContent = patternName ? patternName : 'Unnamed pattern';
+
+                        // Add an event listener to redirect when a pattern is clicked
+                        card.addEventListener('click', () => {
+                            console.log(`Redirecting to pattern.html?id=${patternId}`); // Log to check the id
+                            window.location.href = `pattern.html?id=${patternId}`;
+                        });
+
+                        container.appendChild(card);
+                    });
+                } else {
+                    footer.textContent = 'No patterns found.';
+                }
+            } catch (error) {
+                console.error('Error fetching patterns:', error);
+                footer.textContent = 'Failed to load patterns. Please try again later.';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggest a Pattern</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+            border-bottom: 1px solid #ccc;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 1.2em;
+            margin: 0;
+            flex: 1; /* Occupy remaining space on the left */
+        }
+
+        header nav {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        header a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group textarea {
+            height: 150px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="home.html" style="text-decoration: none; color: black;">Privacy Patterns</a></h1>
+        <nav>
+            <a href="search.html">Search</a>
+            <a href="suggest.html">Suggest</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Suggest a New Privacy Pattern</h2>
+
+        <!-- Suggestion Form -->
+        <form id="suggest-form">
+            <div class="form-group">
+                <label for="content">Your Suggestion</label>
+                <textarea id="content" name="content" placeholder="Describe your suggestion here..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="email">Your Email (Optional)</label>
+                <input type="email" id="email" name="email" placeholder="Your email (optional)">
+            </div>
+            <button type="submit">Submit Suggestion</button>
+        </form>
+
+        <!-- Success/Error Message -->
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('suggest-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            const content = document.getElementById('content').value;
+            const email = document.getElementById('email').value;
+
+            // Check if the content is provided
+            if (!content) {
+                showMessage('error', 'Please provide a suggestion.');
+                return;
+            }
+
+            try {
+                // Send POST request to Strapi API
+                const response = await fetch('http://localhost:1337/api/suggests', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            Content: content,
+                            UserEmail: email || null, // If email is empty, send null
+                        },
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Show success message if the proposal was sent successfully
+                    showMessage('success', 'Your suggestion has been successfully submitted!');
+                    // Reset form fields
+                    document.getElementById('suggest-form').reset();
+                } else {
+                    // Handle errors if any
+                    showMessage('error', 'There was an error submitting your suggestion. Please try again.');
+                }
+            } catch (error) {
+                // Show error if the request fails
+                console.error('Error:', error);
+                showMessage('error', 'An unexpected error occurred. Please try again later.');
+            }
+        });
+
+        // Function to display success or error messages
+        function showMessage(type, message) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = message;
+            messageElement.className = `message ${type}`;
+            messageElement.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

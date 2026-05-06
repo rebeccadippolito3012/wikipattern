@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+            border-bottom: 1px solid #ccc;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 1.2em;
+            margin: 0;
+            flex: 1;
+        }
+
+        header nav {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        header a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-size: 1em;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header con navigazione -->
+    <header>
+        <h1><a href="home.html" style="text-decoration: none; color: black;">Privacy Patterns</a></h1>
+        <nav>
+            <a href="search.html">Search</a>
+            <a href="suggest.html">Suggest</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Provide Your Feedback</h1>
+
+        <!-- Box per inserire il nome del pattern -->
+        <div class="section">
+            <label for="related-pattern">Enter the Pattern Name:</label>
+            <input type="text" id="related-pattern" placeholder="Enter the pattern name">
+        </div>
+
+        <!-- Form di feedback -->
+        <div class="section">
+            <label for="feedback-text">Your Feedback:</label>
+            <textarea id="feedback-text" placeholder="Enter your feedback here"></textarea>
+        </div>
+
+        <div class="section">
+            <label for="feedback-rating">Your Rating (1 to 5):</label>
+            <select id="feedback-rating">
+                <option value="1">1 - Poor</option>
+                <option value="2">2 - Fair</option>
+                <option value="3" selected>3 - Good</option>
+                <option value="4">4 - Very Good</option>
+                <option value="5">5 - Excellent</option>
+            </select>
+        </div>
+
+        <button id="submit-feedback-btn">Submit Feedback</button>
+    </div>
+
+    <footer>
+        <p>Provide your feedback about the privacy pattern</p>
+    </footer>
+
+    <script>
+        document.getElementById('submit-feedback-btn').addEventListener('click', async () => {
+            const relatedPattern = document.getElementById('related-pattern').value; // Nome pattern inserito
+            const feedbackText = document.getElementById('feedback-text').value;
+            const feedbackRating = document.getElementById('feedback-rating').value;
+
+            // Verifica che il nome del pattern e il feedback siano stati inseriti
+            if (!relatedPattern.trim()) {
+                alert('Please enter the name of the pattern.');
+                return;
+            }
+
+            if (!feedbackText.trim()) {
+                alert('Please enter your feedback.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:1337/api/feedbacks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            feedback: feedbackText, // Contenuto del feedback
+                            rating: feedbackRating, // Valutazione dell'utente
+                            relatedpattern: relatedPattern, // Nome del pattern inserito
+                            isApproved: false,  // Stato di approvazione del feedback
+                        },
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (result.data) {
+                    alert('Thank you for your feedback!');
+                    document.getElementById('related-pattern').value = ''; // Resetta il campo del pattern
+                    document.getElementById('feedback-text').value = ''; // Resetta il feedback
+                    document.getElementById('feedback-rating').value = '3'; // Resetta la valutazione
+                } else {
+                    alert('Error submitting feedback. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                alert('Error submitting feedback. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

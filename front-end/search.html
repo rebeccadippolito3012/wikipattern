@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Privacy Patterns</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px; /* Aggiungi più spazio ai lati */
+            border-bottom: 1px solid #ccc;
+            max-width: 1200px; /* Limita la larghezza del contenuto */
+            margin: 0 auto; /* Centra l'header nella pagina */
+        }
+
+        header h1 {
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        header nav {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        header a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .container {
+            width: 80%;
+            padding: 20px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto; /* Centra il contenitore */
+        }
+
+        .search-container {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 1.1em;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 1.1em;
+        }
+
+        footer {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="home.html">Privacy Patterns</a></h1>
+        <nav>
+            <a href="search.html">Search</a>
+            <a href="suggest.html">Suggest</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="search-container">
+            <label for="search-input">Enter the pattern name to search:</label>
+            <div>
+                <input type="text" id="search-input" placeholder="Pattern name...">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+
+        <div class="result" id="result-container">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <footer>
+        <p>Privacy Patterns Search Page</p>
+    </footer>
+
+    <script>
+        document.getElementById('search-btn').addEventListener('click', async () => {
+            const searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.innerHTML = '';  // Clear previous results
+
+            if (searchQuery === '') {
+                resultContainer.innerHTML = '<p class="error-message">Please enter a pattern name to search.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:1337/api/patterns');
+                const data = await response.json();
+                const patterns = data.data;
+
+                const foundPattern = patterns.find(pattern => pattern.attributes?.PatternName.toLowerCase() === searchQuery);
+
+                if (foundPattern) {
+                    resultContainer.innerHTML = `
+                        <p class="success-message">Pattern found! Click to view the details:</p>
+                        <a href="pattern.html?id=${foundPattern.id}" class="pattern-link">${foundPattern.attributes.PatternName}</a>
+                    `;
+                } else {
+                    resultContainer.innerHTML = '<p class="error-message">No pattern found with that name.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching patterns:', error);
+                resultContainer.innerHTML = '<p class="error-message">An error occurred while searching for patterns. Please try again later.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
