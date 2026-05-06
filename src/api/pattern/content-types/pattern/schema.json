@@ -1,0 +1,82 @@
+{
+  "kind": "collectionType",
+  "collectionName": "patterns",
+  "info": {
+    "singularName": "pattern",
+    "pluralName": "patterns",
+    "displayName": "Pattern",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "PatternName": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Context": {
+      "type": "text"
+    },
+    "Problem": {
+      "type": "text"
+    },
+    "Solution": {
+      "type": "text"
+    },
+    "Example": {
+      "type": "text"
+    },
+    "mvcs": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::mvc.mvc",
+      "mappedBy": "patterns"
+    },
+    "strategies": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::strategy.strategy",
+      "mappedBy": "patterns"
+    },
+    "pbd_principles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pbd-principle.pbd-principle",
+      "mappedBy": "patterns"
+    },
+    "iso_phases": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::iso-phase.iso-phase",
+      "mappedBy": "patterns"
+    },
+    "owasps": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::owasp.owasp",
+      "mappedBy": "patterns"
+    },
+    "cwes": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::cwe.cwe",
+      "mappedBy": "patterns"
+    },
+    "gdpr_articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::gdpr-article.gdpr-article",
+      "mappedBy": "patterns"
+    },
+    "feedbacks": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::feedback.feedback",
+      "mappedBy": "patterns"
+    }
+  }
+}

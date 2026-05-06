@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "gdpr_articles",
+  "info": {
+    "singularName": "gdpr-article",
+    "pluralName": "gdpr-articles",
+    "displayName": "GDPRArticle"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "ArticleNumber": {
+      "type": "integer"
+    },
+    "ArticleName": {
+      "type": "text"
+    },
+    "patterns": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pattern.pattern",
+      "inversedBy": "gdpr_articles"
+    }
+  }
+}

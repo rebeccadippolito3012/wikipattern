@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "iso_phases",
+  "info": {
+    "singularName": "iso-phase",
+    "pluralName": "iso-phases",
+    "displayName": "ISO Phase",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "ISOPhaseNumber": {
+      "type": "decimal"
+    },
+    "ISOPhaseDescription": {
+      "type": "text"
+    },
+    "patterns": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pattern.pattern",
+      "inversedBy": "iso_phases"
+    }
+  }
+}

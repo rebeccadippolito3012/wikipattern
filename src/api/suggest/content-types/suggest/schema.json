@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "suggests",
+  "info": {
+    "singularName": "suggest",
+    "pluralName": "suggests",
+    "displayName": "Suggest",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Content": {
+      "type": "text"
+    },
+    "UserEmail": {
+      "type": "email"
+    },
+    "isapproved": {
+      "type": "boolean"
+    }
+  }
+}

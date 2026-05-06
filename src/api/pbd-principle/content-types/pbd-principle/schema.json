@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pbd_principles",
+  "info": {
+    "singularName": "pbd-principle",
+    "pluralName": "pbd-principles",
+    "displayName": "PBD-Principle"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "PrincipleName": {
+      "type": "text"
+    },
+    "patterns": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pattern.pattern",
+      "inversedBy": "pbd_principles"
+    }
+  }
+}
